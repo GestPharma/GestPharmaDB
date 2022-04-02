@@ -10,6 +10,8 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Transactions;
 
+using static System.Formats.Asn1.AsnWriter;
+
 namespace GestPharmaDB_Parametre
     {
     class Program
@@ -371,14 +373,15 @@ namespace GestPharmaDB_Parametre
                                 }
                             else { break; }
                             }
-                        }
+                        transactionScope.Complete();
+                    }
                     catch (TransactionException ex)
-                        {
+                    {
                         transactionScope.Dispose();
                         Console.WriteLine($"\n\n Abandon CIS {Ntable[0]} {ex.Message} ==> {DateTime.Now}");
                         break;
-                        }
                     }
+                }
                 Console.WriteLine($"\n\n Fin CIS ==> {DateTime.Now}");
             }
         }
