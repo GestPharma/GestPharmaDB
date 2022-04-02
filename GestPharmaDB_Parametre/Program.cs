@@ -15,6 +15,7 @@ namespace GestPharmaDB_Parametre
         {
         // Paramètre de connexion à la BDD CIS
         const string CONNECTION_STRING = @"Data Source=LENOVO;Initial Catalog=CIS;Integrated Security=True";
+        static readonly string BACKUP_STRING = @$"Backup database CIS to disk='C:\_BACKUP-CIS\CIS-{DateTime.UtcNow.ToString("yyyy-MM-dd HH-mm-ss")}.bak'";
 
         // Les fichiers à lire sur le WEB
         static readonly string[] tables = {
@@ -33,6 +34,17 @@ namespace GestPharmaDB_Parametre
             using WebClient client = new();
             for (int nbtable = 0; nbtable < tables.Length; nbtable++)
                 {
+                Console.WriteLine($"\n\n Début BACKUP CIS ==> {DateTime.Now}");
+                using SqlConnection connection = new(CONNECTION_STRING);
+                using SqlCommand cmd = connection.CreateCommand();
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = BACKUP_STRING;
+                connection.Open();
+                try { cmd.ExecuteNonQuery(); Console.Write("B"); }
+                catch { Console.Write("x"); }
+                connection.Close();
+                Console.WriteLine($"\n\n fin BACKUP CIS ==> {DateTime.Now}");
+
                 Stream stream = client.OpenRead(tables[nbtable]);
                 using StreamReader reader = new(stream);
                 Console.OutputEncoding = System.Text.Encoding.UTF8;
@@ -40,10 +52,10 @@ namespace GestPharmaDB_Parametre
 
                 string content = System.Uri.UnescapeDataString(reader.ReadToEnd());
                 string[] lignes = content.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                if (lignes.Count() <= 2) { lignes = content.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries); }
+                if (lignes.Length <= 2) { lignes = content.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries); }
 
-                using SqlConnection connection = new(CONNECTION_STRING);
-                using SqlCommand cmd = connection.CreateCommand();
+                // using SqlConnection connection = new(CONNECTION_STRING);
+                // using SqlCommand cmd = connection.CreateCommand();
                 connection.Open();
                 cmd.CommandType = CommandType.Text;
                 Console.Write($"\n\n {tables[nbtable]} ==> {DateTime.Now}");
@@ -355,6 +367,7 @@ namespace GestPharmaDB_Parametre
                     else { break; }
                     }
                 }
-            }
+            Console.WriteLine($"\n\n Fin CIS ==> {DateTime.Now}");
+        }
     }
 }
