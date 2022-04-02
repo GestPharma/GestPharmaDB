@@ -17257,7 +17257,7 @@ BEGIN TRY
 			        from (select CCB.cip13 as cip13, CONCAT ( CB.denomination,' ',CCB.libelle_prez,' [', CB.administration, ']') as denomination, CB.etat_com
 						        FROM  LENOVO.[CIS].[dbo].[cis_bdpm] CB, LENOVO.[CIS].[dbo].[cis_cip_bdpm] CCB
 						        WHERE CB.cis = CCB.cis) as QQCHOSE
-			        WHERE CAST(QQCHOSE.etat_com AS nVARCHAR(255)) = 'Commercialisée'
+			        WHERE CAST(QQCHOSE.etat_com AS nVARCHAR(255)) LIKE 'Commercialis%'
 			        order by QQCHOSE.denomination
         OPEN c1_cursor  
         FETCH NEXT FROM c1_cursor INTO @cur_denomination, @cur_cip13;

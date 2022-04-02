@@ -1,4 +1,4 @@
-﻿CREATE   FUNCTION [dbo].[check_if_armoires_exists] ( @armoire bigint )
+﻿CREATE FUNCTION [dbo].[check_if_armoires_exists] ( @armoire bigint )
 RETURNS BIT
 AS
 BEGIN
